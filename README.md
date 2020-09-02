@@ -9,4 +9,4 @@ TO RUN THIS CODE
 1. Unzip file all_hourly_data_3000.zip 
 2. Run adaptMain.py
 
-The ADAPT function printing all the results of evaluation the adaptiation algoritm described in the paper.
+The ADAPT function printing all the results of evaluation of the adaptiation algoritm described in the paper.
