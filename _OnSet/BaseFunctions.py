@@ -22,7 +22,7 @@ NUM_CLASSES = 2
 
 # %%
 
-CHUNK_KEY = {'ONSET': 0, 'CONTROL': 1, 'ON_INTERVENTION': 2, 'WEAN': 3}
+CHUNK_KEY = {'ONSET': 0, 'CONTROL': 1}
 
 
 # %% md
@@ -40,9 +40,9 @@ def RemoveSpecialChars(str):
     return alphanumeric
 
 
-DATAFILE = '/home/rotem/Desktop/Projects/Mimic/mimic-master/MIMIC_Extract/data/curated/3000/all_hourly_data_3000.h5'
-C_FILE = '/home/rotem/Desktop/Projects/Mimic/mimic-master/MIMIC_Extract/data/curated/C.h5'
-ARDS_HF ='/home/rotem/Desktop/Projects/Mimic/mimic-master/MIMIC_Extract/data/curated/static_ards_hf.csv'
+DATAFILE = 'all_hourly_data_3000.h5'
+C_FILE = 'C.h5'
+ARDS_HF ='static_ards_hf.csv'
 
 
 def mksureDir(outdir):
@@ -240,11 +240,11 @@ def make_3d_tensor_slices(GAP_TIME,X_tensor, Y_tensor, lengths , staticCol ):
                 elif (len(result_window_diff) == 1) and (0 in result_window_diff) and (max(result_window) == 0):
                     result = CHUNK_KEY['CONTROL']
                 elif (len(result_window_diff) == 1) and (0 in result_window_diff) and (max(result_window) == 1):
-                    result =  CHUNK_KEY['ONSET']# CHUNK_KEY['ON_INTERVENTION']
+                    result =  CHUNK_KEY['ONSET']
                 elif 1 in result_window_diff:
                     result = CHUNK_KEY['ONSET']
                 elif -1 in result_window_diff:
-                    result = None#CHUNK_KEY['WEAN']
+                    result = None
                 else:
                     result = None
 
