@@ -5,10 +5,10 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
 
-from BaseFunctions import *
-from simple_impute import simple_imputer
+from _OnSet.BaseFunctions import *
+from _OnSet.simple_impute import simple_imputer
 
-#for the paper
+
 def ADAPT(X_target, Y_target, part_list=[0.001, 0.002, 0.05, 0.1], **params):
     Y_test = np.int64(Y_target)
 
