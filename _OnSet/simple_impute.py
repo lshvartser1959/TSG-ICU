@@ -1,12 +1,8 @@
 import copy, math, os, pickle, time, numpy as np
 #import ray
 import pandas as pd
-#
-#
-# ray.shutdown()
-# ray.init(num_cpus=16)
-ID_COLS = ['subject_id', 'hadm_id', 'icustay_id']
 
+ID_COLS = ['subject_id', 'hadm_id', 'icustay_id']
 
 def simple_imputer(df,train_subj):
     idx = pd.IndexSlice
