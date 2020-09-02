@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import label_binarize
 
 from BaseFunctions import *
-from Vent.simple_impute import simple_imputer
+from simple_impute import simple_imputer
 
 
 def ADAPT(X_target, Y_target, part_list=[0.001, 0.002, 0.05, 0.1], **params):
