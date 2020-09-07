@@ -40,9 +40,9 @@ def RemoveSpecialChars(str):
     return alphanumeric
 
 
-DATAFILE = 'all_hourly_data_3000.h5'
-C_FILE = 'C.h5'
-ARDS_HF ='static_ards_hf.csv'
+DATAFILE = './all_hourly_data_3000.h5'
+C_FILE = './C.h5'
+ARDS_HF ='./static_ards_hf.csv'
 
 #Extract changed
 def mksureDir(outdir):
