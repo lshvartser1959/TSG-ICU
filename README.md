@@ -11,4 +11,4 @@ TO RUN THIS CODE
 
 The ADAPT function printing all the results of evaluation of the adaptiation algoritm described in the paper.
 
-Please refernce our paper in case you will use the code or the adaptation algorithm from here.
+Please reference our paper in case you will use the code or the adaptation algorithm from here.
