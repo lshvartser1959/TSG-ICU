@@ -12,3 +12,19 @@ TO RUN THIS CODE
 The ADAPT function printing all the results of evaluation of the adaptiation algoritm described in the paper.
 
 Please reference our paper in case you will use the code or the adaptation algorithm from here.
+
+Update 08.10.2020:
+
+Now 3 variants of adaptaion are considered.
+
+1) The original one
+2) Oversampling with SMOTE
+3) Without oversampling, but with increased portion of target data for transfer learning
+
+The control of choice of the adaptation scheme is done with OVERSAMPL parameter in BaseFunctions.py
+
+OVERSAMPL = 0 - no oversampling
+OVERSAMPL = 1 - RandomOverSampler
+OVERSAMPL = 2 - SMOTE
+
+In the current uploaded version OVERSAMPL = 0
