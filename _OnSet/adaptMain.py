@@ -8,8 +8,13 @@ from sklearn.preprocessing import label_binarize
 from _OnSet.BaseFunctions import *
 from _OnSet.simple_impute import simple_imputer
 
+from imblearn.over_sampling import SMOTE
 
-def ADAPT(X_target, Y_target, part_list=[0.001, 0.002, 0.05, 0.1], **params):
+def ADAPT(X_target, Y_target, oversampl, **params):
+    if oversampl:
+        part_list = [0.001, 0.002, 0.05, 0.1]
+    else:
+        part_list = [0.2, 0.3, 0.5]
     Y_test = np.int64(Y_target)
 
     X_test = X_target
@@ -18,9 +23,14 @@ def ADAPT(X_target, Y_target, part_list=[0.001, 0.002, 0.05, 0.1], **params):
     #######
     X_test = np.nan_to_num(X_test)
 
-    rus = RandomOverSampler(sampling_strategy='minority')
-    X_test, y_test = rus.fit_sample(X_test, y_test)
-
+    # transform the dataset
+    if oversampl == 1:
+        rus = RandomOverSampler(sampling_strategy='minority')
+        X_test, y_test = rus.fit_sample(X_test, y_test)
+    else:
+        if oversampl == 2:
+            oversample = SMOTE(random_state=42)
+            X_test, y_test = oversample.fit_resample (X_test, y_test)
     ###############################################
     # set here your prefer transformation function
     AUCs = []
@@ -372,8 +382,10 @@ def run(args, GAP_TIME):
     print('target auc ' + str(s))
 
     print('')
+    
+    oversampl = OVERSAMPL
 
-    ADAPT(x_test_concat, y_test_classes, **params)
+    ADAPT(x_test_concat, y_test_classes, oversampl, **params)
 
     print('')
 
