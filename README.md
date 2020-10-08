@@ -23,8 +23,8 @@ Now 3 variants of adaptaion are considered.
 
 The control of choice of the adaptation scheme is done with OVERSAMPL parameter in BaseFunctions.py
 
-OVERSAMPL = 0 - no oversampling
-OVERSAMPL = 1 - RandomOverSampler
-OVERSAMPL = 2 - SMOTE
+OVERSAMPL = 0 - no oversampling,
+OVERSAMPL = 1 - RandomOverSampler,
+OVERSAMPL = 2 - SMOTE.
 
-In the current uploaded version OVERSAMPL = 0
+In the current uploaded version OVERSAMPL = 0.
