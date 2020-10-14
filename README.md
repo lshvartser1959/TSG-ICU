@@ -13,7 +13,7 @@ The ADAPT function printing all the results of evaluation of the adaptiation alg
 
 Please reference our paper in case you will use the code or the adaptation algorithm from here.
 
-Update 08.10.2020:
+Update:
 
 Now 3 variants of adaptaion are considered.
 
