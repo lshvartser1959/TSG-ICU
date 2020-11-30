@@ -304,7 +304,8 @@ def run(args, GAP_TIME):
 
     # %% md
 
-
+    static_ards = form_index (Y_ards, static_ards)
+    
     # %% md
 
     # %%
