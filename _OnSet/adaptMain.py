@@ -10,18 +10,22 @@ from _OnSet.simple_impute import simple_imputer
 
 from imblearn.over_sampling import SMOTE
 
-def ADAPT(X_target, Y_target, oversampl, **params):
+import matplotlib.pyplot as plt
+
+from  _OnSet.AUROC_L import Gntbok2
+
+def ADAPT(X_target, Y_target, static_to_keep, static_ards, oversampl, **params):
     if oversampl:
         part_list = [0.001, 0.002, 0.05, 0.1]
     else:
-        part_list = [0.2, 0.3, 0.5]
-    Y_test = np.int64(Y_target)
+        part_list = [0.1, 0.2, 0.3, 0.4, 0.5] #[0.5] #
+#    Y_test = np.int64(Y_target)
 
     X_test = X_target
-    y_test = Y_test
-
+#    y_test = Y_test
+    y_test = Y_target
     #######
-    X_test = np.nan_to_num(X_test)
+#    X_test = np.nan_to_num(X_test)
 
     # transform the dataset
     if oversampl == 1:
@@ -36,10 +40,17 @@ def ADAPT(X_target, Y_target, oversampl, **params):
     AUCs = []
     clf_just = XGBClassifier(**params)
     for part in part_list:
-        X_test1, X_test2, y_test1, y_test2 = train_test_split(X_test, y_test, test_size=part, random_state=42)
-        X_test1, X_test3, y_test1, y_test3 = train_test_split(X_test1, y_test1, test_size=part, random_state=42)
+        # X_test1, X_test2, y_test1, y_test2 = train_test_split(X_test, y_test, test_size=part, random_state=42)
+        # X_test1, X_test3, y_test1, y_test3 = train_test_split(X_test1, y_test1, test_size=part, random_state=42)
+
+        X_test1, y_test1, X_test3, y_test3, X_test2, y_test2 = dynamic_split (static_ards, part, X_test, y_test, static_to_keep)
+
+        # oversample = SMOTE (random_state=42)
+        # X_test2, y_test2 = oversample.fit_resample (X_test2, y_test2)
 
         clf_just.fit(X_test2, y_test2, xgb_model='model_1.model')
+
+        # X_test3, y_test3 = oversample.fit_resample (X_test3, y_test3)
 
         y_tag = clf_just.predict(X_test3)
         y_prob_tag = clf_just.predict_proba(X_test3)[:, 0]
@@ -48,16 +59,22 @@ def ADAPT(X_target, Y_target, oversampl, **params):
         print('source mapping function accuracy: ' + str(acc))
         s = roc_auc_score(1 - y_test3, y_prob_tag, average='macro')
         print('target auc ' + str(s))
-
+        Gntbok2 (y_prob_tag, 1 - y_test3, 6)
         print('')
         AUCs.append(s)
     idx = AUCs.index(max(AUCs))
     part = part_list[idx]
 
-    X_test1, X_test2, y_test1, y_test2 = train_test_split(X_test, y_test, test_size=part, random_state=42)
-    X_test1, X_test3, y_test1, y_test3 = train_test_split(X_test1, y_test1, test_size=part, random_state=42)
 
+    X_test1, y_test1, X_test3, y_test3, X_test2, y_test2 = dynamic_split (static_ards, part, X_test, y_test,
+                                                                          static_to_keep)
+
+    # oversample = SMOTE (random_state=42)
+    # X_test2, y_test2 = oversample.fit_resample (X_test2, y_test2)
+    #clf_just = XGBClassifier (**params)
     clf_just.fit(X_test2, y_test2, xgb_model='model_1.model')
+
+    # X_test1, y_test1 = oversample.fit_resample (X_test1, y_test1)
 
     y_tag = clf_just.predict(X_test1)
     y_prob_tag = clf_just.predict_proba(X_test1)[:, 0]
@@ -66,7 +83,7 @@ def ADAPT(X_target, Y_target, oversampl, **params):
     print('source mapping function accuracy: ' + str(acc))
     s = roc_auc_score(1 - y_test1, y_prob_tag, average='macro')
     print('target auc ' + str(s))
-
+    Gntbok2 (y_prob_tag, 1 - y_test1, 6)
     print('')
 
 
@@ -385,7 +402,8 @@ def run(args, GAP_TIME):
     
     oversampl = OVERSAMPL
 
-    ADAPT(x_test_concat, y_test_classes, oversampl, **params)
+    ADAPT(X_ards, Y_ards, static_to_keep, static_ards, oversampl, **params)
+
 
     print('')
 
