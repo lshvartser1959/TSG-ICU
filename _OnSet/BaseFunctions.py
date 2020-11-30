@@ -9,6 +9,9 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import roc_curve, roc_auc_score, recall_score, precision_score
 from xgboost import XGBClassifier
 
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import label_binarize
+
 now = dt.now()
 runtime = now.strftime('%d-%m-%Y_%H%M')
 
@@ -180,6 +183,75 @@ def create_y_matrix(y):
     zeros[:y.shape[0], :] = y
     return zeros
 
+def form_index(Y, yandex):
+    VY = Y.reset_index()
+    VY = VY.set_index('subject_id')
+    VY = VY.drop('icustay_id', axis=1)
+    VY = VY.drop('hadm_id', axis=1)
+    yag = VY[['hours_in', 'vent']].groupby(['subject_id']).agg({'hours_in': ['count'], 'vent': ['sum']})
+
+    # if yag > 0 so patient was ventilated
+    yag = yag > 0
+
+    # Set true or false for ventilation... in static
+    yandex[INTERVENTION] = yag.vent.values
+
+    return yandex
+
+##dynamic split
+def dynamic_split(yandex, part, X, Y, static_to_keep):
+    train_ids, test_ids = train_test_split(yandex.reset_index(), test_size=part,
+                                           random_state=42, stratify=yandex[INTERVENTION])
+    split_train_ids, val_ids = train_test_split(train_ids, test_size=part,
+                                                random_state=42, stratify=train_ids[INTERVENTION])
+    x = np.array(list(X.reset_index().groupby('subject_id').apply(create_x_matrix)))
+    y = np.array(list(Y.reset_index().groupby('subject_id').apply(create_y_matrix)))[:, :, 0]
+
+    keys = pd.Series (X.reset_index ( )['subject_id'].unique ( ))
+    lengths = np.array (yandex.reset_index ( ).max_hours + 1).reshape (-1)
+    ## Stratified Sampling
+
+    # %%
+
+    train_indices = np.where (keys.isin (train_ids['subject_id']))[0]
+    test_indices = np.where (keys.isin (test_ids['subject_id']))[0]
+    train_static = train_ids
+    split_train_indices = np.where (keys.isin (split_train_ids['subject_id']))[0]
+    val_indices = np.where (keys.isin (val_ids['subject_id']))[0]
+
+    # %%
+
+    X_train = x[split_train_indices]
+    Y_train = y[split_train_indices]
+    X_test = x[test_indices]
+    Y_test = y[test_indices]
+    X_val = x[val_indices]
+    Y_val = y[val_indices]
+    lengths_train = lengths[split_train_indices]
+    lengths_val = lengths[val_indices]
+    lengths_test = lengths[test_indices]
+    print('\nOK!\n make_3d_tensor_slices .............')
+    time_series_col: int = int (2 + X.shape[1] - static_to_keep.shape[1])
+    time_series_col -= 1;
+
+    x_train, y_train = make_3d_tensor_slices(GAP_TIME, X_train, Y_train, lengths_train, time_series_col)
+    # Remember To RELOCATE <Current supervised Y > LAST INDEX ON X on Features table and not on STATIC table !!!!  !!! Roy
+
+    x_val, y_val = make_3d_tensor_slices(GAP_TIME, X_val, Y_val, lengths_val, time_series_col)
+
+    x_test, y_test = make_3d_tensor_slices(GAP_TIME, X_test, Y_test, lengths_test, time_series_col)
+
+    del Y_train, X_test, Y_test, X_val, Y_val
+
+    y_train_classes = label_binarize(y_train, classes=range(NUM_CLASSES))
+    y_val_classes = label_binarize(y_val, classes=range(NUM_CLASSES))
+    y_test_classes = label_binarize(y_test, classes=range(NUM_CLASSES))
+
+    x_train_concat = remove_duplicate_static(x_train,time_series_col)
+    x_val_concat = remove_duplicate_static (x_val, (time_series_col))
+    x_test_concat = remove_duplicate_static(x_test,(time_series_col))
+
+    return np.nan_to_num(x_train_concat), np.int64 (y_train_classes), np.nan_to_num(x_val_concat), np.int64 (y_val_classes), np.nan_to_num(x_test_concat), np.int64 (y_test_classes)
 
 ## Make Windows
 
