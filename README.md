@@ -2,10 +2,9 @@
 Main repository of the TSG-ICU project
 
 This code realizes the adaptive procedure and its evaluation on no-ARDS/ ARDS sets described in our paper
-Prediction of Invasive Mechanical Ventilation in hospitalized patients
-suffering from COVID-19 respiratory failure using Machine Learning Models
-Authors: Pierre Singer *, Itai Bendavid, Liran Statlander, Yael Haviv, Leonid
-Shvartser, Shmuel Teppler, Roy Azullay, Rotem Sapir,  submitted to Journal of Clinical Medicine 
+Title: A novel machine learning model to predict respiratory failure and invasive mechanical ventilation in critically ill patients with COVID-19
+Authors: itai Aharon bendavid; Liran Statlender; Leonid Shvartser; Shmuel Teppler; Roy Azullay; Rotem Sapir; Pierre Singer
+submitted to Critical Care , Supplements 3, 4
 
 The code partly uses the MIMIC Extract framework.
 
